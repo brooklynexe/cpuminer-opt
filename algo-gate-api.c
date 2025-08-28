@@ -193,6 +193,7 @@ bool register_algo_gate( int algo, algo_gate_t *gate )
      case ALGO_LYRA2Z:       register_lyra2z_algo       ( gate ); break;
      case ALGO_LYRA2Z330:    register_lyra2z330_algo    ( gate ); break;
      case ALGO_M7M:          register_m7m_algo          ( gate ); break;
+	 case ALGO_MINOTAURX:    register_minotaurx_algo    ( gate ); break;
      case ALGO_MYR_GR:       register_myriad_algo       ( gate ); break;
      case ALGO_NEOSCRYPT:    register_neoscrypt_algo    ( gate ); break;
      case ALGO_NIST5:        register_nist5_algo        ( gate ); break;
@@ -319,11 +320,12 @@ const char* const algo_alias_map[][2] =
   { "lyra2",             "lyra2re"      },
   { "lyra2v2",           "lyra2rev2"    },
   { "lyra2zoin",         "lyra2z330"    },
+  { "minotaurx",         "minotaurx"    },
   { "myrgr",             "myr-gr"       },
   { "myriad",            "myr-gr"       },
   { "neo",               "neoscrypt"    },
   { "phi",               "phi1612"      },
-//  { "sia",               "blake2b"      },
+  { "sia",               "blake2b"      },
   { "sib",               "x11gost"      },
   { "timetravel8",       "timetravel"   },
   { "ziftr",             "zr5"          },
