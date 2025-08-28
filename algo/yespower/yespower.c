@@ -185,3 +185,58 @@ bool register_yespowersugar_algo( algo_gate_t* gate )
   verstring=7;
   return true;
 };
+
+bool register_yespoweradvc_algo( algo_gate_t* gate )
+{
+  gate->optimizations = SSE2_OPT | SHA_OPT;
+  gate->get_max64     = (void*)&yespower_get_max64;
+  gate->scanhash      = (void*)&scanhash_yespower;
+  gate->hash          = (void*)&yespower_hash;
+  gate->set_target    = (void*)&scrypt_set_target;
+  verstring=7;
+  return true;
+};
+
+bool register_yespowereqpay_algo( algo_gate_t* gate )
+{
+  gate->optimizations = SSE2_OPT | SHA_OPT;
+  gate->get_max64     = (void*)&yespower_get_max64;
+  gate->scanhash      = (void*)&scanhash_yespower;
+  gate->hash          = (void*)&yespower_hash;
+  gate->set_target    = (void*)&scrypt_set_target;
+  verstring=7;
+  return true;
+};
+
+bool register_yespowerltncg_algo( algo_gate_t* gate )
+{
+  gate->optimizations = SSE2_OPT | SHA_OPT;
+  gate->get_max64     = (void*)&yespower_get_max64;
+  gate->scanhash      = (void*)&scanhash_yespower;
+  gate->hash          = (void*)&yespower_hash;
+  gate->set_target    = (void*)&scrypt_set_target;
+  verstring=7;
+  return true;
+};
+
+bool register_yespowermgpc_algo( algo_gate_t* gate )
+{
+  gate->optimizations = SSE2_OPT | SHA_OPT;
+  gate->get_max64     = (void*)&yespower_get_max64;
+  gate->scanhash      = (void*)&scanhash_yespower;
+  gate->hash          = (void*)&yespower_hash;
+  gate->set_target    = (void*)&scrypt_set_target;
+  verstring=7;
+  return true;
+};
+
+bool register_yespowertide_algo( algo_gate_t* gate )
+{
+  gate->optimizations = SSE2_OPT | SHA_OPT;
+  gate->get_max64     = (void*)&yespower_get_max64;
+  gate->scanhash      = (void*)&scanhash_yespower;
+  gate->hash          = (void*)&yespower_hash;
+  gate->set_target    = (void*)&scrypt_set_target;
+  verstring=7;
+  return true;
+};
