@@ -520,6 +520,7 @@ enum algos {
         ALGO_LYRA2Z,
         ALGO_LYRA2Z330,
         ALGO_M7M,
+		ALGO_MINOTAURX,
         ALGO_MYR_GR,      
         ALGO_NEOSCRYPT,
         ALGO_NIST5,       
