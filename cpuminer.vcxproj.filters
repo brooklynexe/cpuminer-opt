@@ -204,6 +204,9 @@
     <ClCompile Include="algo\lyra2rev2.c">
       <Filter>algo</Filter>
     </ClCompile>
+    <ClCompile Include="algo\minotaurx.c">
+      <Filter>Source Files\algo</Filter>
+    </ClCompile>
     <ClCompile Include="algo\myr-groestl.c">
       <Filter>algo</Filter>
     </ClCompile>
