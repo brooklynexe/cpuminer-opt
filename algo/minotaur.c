@@ -276,7 +276,27 @@ int scanhash_minotaur(int thr_id, struct work *work, uint32_t max_nonce, uint64_
 
 		if (hash[7] <= Htarg && fulltest(hash, ptarget)) {
 			work_set_target_ratio(work, hash);
-			pdata[19] = nonce;
+			pdata[19] = nonce;#include "algo-gate-api.h"
+
+extern int scanhash_minotaur(int thr_id, struct work *work,
+                             uint32_t max_nonce, uint64_t *hashes_done,
+                             bool minotaurX);
+
+static int scanhash_minotaurx(int thr_id, struct work *work,
+                              uint32_t max_nonce, uint64_t *hashes_done)
+{
+    return scanhash_minotaur(thr_id, work, max_nonce, hashes_done, true);
+}
+
+bool register_minotaurx_algo(algo_gate_t *gate)
+{
+    gate->name      = "minotaurx";
+    gate->scanhash  = (void*)&scanhash_minotaurx;
+    gate->hash      = NULL;   // optional, scanhash covers it
+    gate->optimizations = 0;
+    return true;
+}
+
 			*hashes_done = pdata[19] - first_nonce;
 			return 1;
 		}
@@ -288,3 +308,5 @@ int scanhash_minotaur(int thr_id, struct work *work, uint32_t max_nonce, uint64_
 	*hashes_done = pdata[19] - first_nonce + 1;
 	return 0;
 }
+
+
