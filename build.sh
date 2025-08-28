@@ -1,32 +1,63 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -e
 
-#if [ "$OS" = "Windows_NT" ]; then
-#    ./mingw64.sh
-#    exit 0
-#fi
+echo "==========================================="
+echo "   cpuminer-opt-cpupower - Multi-Arch Build"
+echo "==========================================="
 
-# Linux build
+ROOT_DIR="$(pwd)"
+OS="$(uname -s)"
+ARCH="$(uname -m)"
+CORES=$(nproc 2>/dev/null || sysctl -n hw.ncpu)
 
-make distclean || echo clean
+# -------- Linux Native --------
+echo "[*] Building native Linux ($ARCH)..."
+./autogen.sh || true
+./configure CFLAGS="-O3 -march=native"
+make -j${CORES}
+cp cpuminer $ROOT_DIR/cpuminer-linux-$ARCH
 
-rm -f config.status
-chmod +x autogen.sh
-./autogen.sh || echo done
+# -------- macOS --------
+if [[ "$OS" == "Darwin" ]]; then
+    echo "[*] Building for macOS..."
+    brew install automake autoconf pkg-config gmp jansson openssl curl || true
+    ./autogen.sh || true
+    ./configure CFLAGS="-O3 -march=native" \
+        CPPFLAGS="-I$(brew --prefix openssl)/include" \
+        LDFLAGS="-L$(brew --prefix openssl)/lib"
+    make clean && make -j${CORES}
+    cp cpuminer $ROOT_DIR/cpuminer-macos
+fi
 
-# Ubuntu 10.04 (gcc 4.4)
-# extracflags="-O3 -march=native -Wall -D_REENTRANT -funroll-loops -fvariable-expansion-in-unroller -fmerge-all-constants -fbranch-target-load-optimize2 -fsched2-use-superblocks -falign-loops=16 -falign-functions=16 -falign-jumps=16 -falign-labels=16"
+# -------- Windows Cross (mingw-w64) --------
+if command -v x86_64-w64-mingw32-gcc >/dev/null 2>&1; then
+    echo "[*] Cross-compiling for Windows x86_64..."
+    make clean || true
+    ./configure --host=x86_64-w64-mingw32 CFLAGS="-O3"
+    make -j${CORES}
+    cp cpuminer.exe $ROOT_DIR/cpuminer-win64.exe
+fi
 
-# Debian 7.7 / Ubuntu 14.04 (gcc 4.7+)
-#extracflags="$extracflags -Ofast -flto -fuse-linker-plugin -ftree-loop-if-convert-stores"
+if command -v i686-w64-mingw32-gcc >/dev/null 2>&1; then
+    echo "[*] Cross-compiling for Windows x86..."
+    make clean || true
+    ./configure --host=i686-w64-mingw32 CFLAGS="-O3"
+    make -j${CORES}
+    cp cpuminer.exe $ROOT_DIR/cpuminer-win32.exe
+fi
 
-#CFLAGS="-O3 -march=native -Wall" ./configure --with-curl --with-crypto=$HOME/usr
-#CFLAGS="-O3 -march=native -Wall" ./configure --with-curl
-#CFLAGS="-O3 -march=core-avx2 -msha -Wall" ./configure --with-curl
-CFLAGS="-O3 -msse2 -Wall" ./configure --with-curl
-#CFLAGS="-O3 -march=native -Wall" CXXFLAGS="$CFLAGS -std=gnu++11" ./configure --with-curl
+# -------- Android (NDK) --------
+if [[ -n "$NDK" ]]; then
+    echo "[*] Building for Android (arm64-v8a + armeabi-v7a)..."
+    $NDK/ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=Android.mk APP_ABI="arm64-v8a armeabi-v7a"
+    mkdir -p $ROOT_DIR/android-build
+    cp -r libs/* $ROOT_DIR/android-build/
+fi
 
-make -j 4
-
-strip -s cpuminer
-
-#mv cpuminer.exe release/cpuminer-avx2-sha.exe
+echo "==========================================="
+echo " Build finished!"
+echo " Outputs in: "
+ls -1 cpuminer* 2>/dev/null || true
+ls -1 *.exe 2>/dev/null || true
+ls -1 android-build/*/cpuminer 2>/dev/null || true
+echo "==========================================="
